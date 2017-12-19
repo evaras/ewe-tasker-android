@@ -51,10 +51,11 @@ public class BeaconActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beacons);
 
+
         ruleExecutionModule = new RuleExecutionModule(getApplicationContext());
         cacheMethods = CacheMethods.getInstance(getApplicationContext());
 
-        user = cacheMethods.getFromPreferences("beaconRuleUser", "public");
+        user = cacheMethods.getFromPreferences("beaconRuleUser", "enrique");
         place = cacheMethods.getFromPreferences("beaconRulePlace","GSI lab");
 
         beaconManager = new BeaconManager(getApplicationContext());
@@ -74,6 +75,7 @@ public class BeaconActivity extends ActionBarActivity {
                 didRangeBeacons(list, region);
             }
         });
+
 
         cdt = new CountDownTimer(10000, 1000) {
 
@@ -127,6 +129,7 @@ public class BeaconActivity extends ActionBarActivity {
                 int beaconId = beacon.getMajor();
                 double accuracy = Utils.computeAccuracy(beacon);
                 Log.i("BEACON", String.valueOf(beaconId));
+
                 String event = "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . @prefix ewe-presence: <http://gsi.dit.upm.es/ontologies/ewe-connected-home-presence/ns/#> . @prefix ewe: <http://gsi.dit.upm.es/ontologies/ewe/ns/#> . @prefix ewe-presence: <http://gsi.dit.upm.es/ontologies/ewe-connected-home-presence/ns/#> . ewe-presence:PresenceSensor" +
 
                         " rdf:type ewe-presence:PresenceDetectedAtDistance. ewe-presence:PresenceSensor"+

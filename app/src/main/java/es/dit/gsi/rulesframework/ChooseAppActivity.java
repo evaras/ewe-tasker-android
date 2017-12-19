@@ -26,7 +26,7 @@ import es.dit.gsi.rulesframework.util.Tasks;
  */
 public class ChooseAppActivity extends ActionBarActivity {
 
-    LinearLayout rulesFrameworkLayout, beaconsLayout;
+    LinearLayout rulesFrameworkLayout, beaconsLayout, empaticaLayout;
     Button editButton;
     TextView server;
 
@@ -37,6 +37,7 @@ public class ChooseAppActivity extends ActionBarActivity {
 
         rulesFrameworkLayout = (LinearLayout) findViewById(R.id.rulesFrameworkLayout);
         beaconsLayout = (LinearLayout) findViewById(R.id.beaconsLayout);
+        empaticaLayout = (LinearLayout) findViewById(R.id.empaticaLayout);
         editButton = (Button) findViewById(R.id.editServer);
         server = (TextView) findViewById(R.id.server);
 
@@ -62,6 +63,15 @@ public class ChooseAppActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(),BeaconActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+            }
+        });
+
+        empaticaLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(),EmpaticaActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
             }

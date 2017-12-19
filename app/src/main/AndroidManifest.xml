@@ -72,7 +72,7 @@
         <activity android:name=".ConfigureBeaconActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".ListGeofencesActivity" />
-
+        <activity android:name=".EmpaticaActivity" />
         <service
             android:name=".services.RuleDefinitionModule"
             android:enabled="true" />

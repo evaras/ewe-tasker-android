@@ -25,10 +25,10 @@ import es.dit.gsi.rulesframework.model.Rule;
  */
 public class Tasks {
 
-    public static String ipServer = "http://javtfg.barcolabs.com";
+    public static String ipServer = "http://ewetasker.cluster.gsi.dit.upm.es";
     //public static String ipServer = "http://ewetasker.cluster.gsi.dit.upm.es";
-    //public static final String defaultGsiUrl = "http://ewetasker.cluster.gsi.dit.upm.es";
-    public static final String defaultGsiUrl = "http://javtfg.barcolabs.com";
+    public static final String defaultGsiUrl = "http://ewetasker.cluster.gsi.dit.upm.es";
+    //public static final String defaultGsiUrl = "http://javtfg.barcolabs.com";
     private static final String urlRulesApi =ipServer +  "/mobileConnectionHelper.php";
     private static final String urlInputApi =ipServer +  "/controller/eventsManager.php";
     private static final String urlGetChannelApi =ipServer +  "/mobileConnectionHelper.php";

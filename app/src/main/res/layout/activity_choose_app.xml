@@ -57,6 +57,27 @@
             android:textSize="30sp"
             android:text="Beacons"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/empaticaLayout"
+        android:background="@drawable/choose_app_background_selector"
+        android:orientation="vertical">
+        <es.dit.gsi.rulesframework.util.TitilliumTextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            app:fontName="Titillium-Regular.otf"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:text="Empatica Controller"/>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

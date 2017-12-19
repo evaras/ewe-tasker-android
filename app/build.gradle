@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "es.dit.gsi.rulesframework"
-        minSdkVersion 18
+        minSdkVersion 19
         targetSdkVersion 23
         versionCode 4
         versionName "1.0.24062016"
@@ -19,6 +19,7 @@ android {
         }
     }
 }
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -37,5 +38,8 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     //Estimotes
     compile 'com.estimote:sdk:0.9.4@aar'
+    //Empatica
+    compile 'com.empatica.empalink:empalink:2.1@aar'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
 
 }
