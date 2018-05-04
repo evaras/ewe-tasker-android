@@ -40,6 +40,9 @@ import com.estimote.sdk.Beacon;
 import com.estimote.sdk.Region;
 import com.estimote.sdk.Utils;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -78,6 +81,15 @@ public class EmpaticaActivity extends AppCompatActivity implements EmpaDataDeleg
     RuleExecutionModule ruleExecutionModule;
     CacheMethods cacheMethods;
     private Region region;
+
+    //Arousal calculation vars:
+    private int arousal = 0;
+    private List<Float> edavalues = new ArrayList<Float>();
+    private boolean init = false;
+    private Float interval = 0.0f;
+    private Float max = 0.0f;
+    private Float min = 0.0f;
+    private int contador =0;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -276,9 +288,80 @@ public class EmpaticaActivity extends AppCompatActivity implements EmpaDataDeleg
 
     public void didReceiveBVP(float bvp, double timestamp) {
         updateLabel(bvpLabel, "" + bvp);
-        //postData(bvp,"eda",region);
+        //postData(bvp,"eda",region)
+
     }
 
+    private double calculateAverage(List <Float> marks) {
+        if (marks == null || marks.isEmpty()) {
+            return 0;
+        }
+        double sum = 0;
+        for (Float mark : marks) {
+            sum += mark;
+        }
+        return sum / marks.size();
+    }
+
+    public int getArousal(){
+        float mean = (float) calculateAverage(edavalues);
+        int arousal = 0;
+
+        if(mean > this.min && mean <= (this.min+this.interval)){
+            arousal = 1;
+        }
+
+        else if(mean >= (this.min+this.interval) &&
+                mean < (this.min+2*this.interval)){
+            arousal = 2;
+        }
+
+        else if(mean >= (this.min+2*this.interval) &&
+                mean < (this.min+3*this.interval)){
+            arousal = 3;
+        }
+
+        else if(mean >= (this.min+3*this.interval) &&
+                mean < (this.min+4*this.interval)){
+            arousal = 4;
+        }
+
+        else if(mean >= (this.min+4*this.interval) &&
+                mean <= (this.max)){
+            arousal = 5;
+        }
+        else {
+            arousal = 0;
+        }
+        String mean1 = "" + mean;
+        String min = "" + this.min;
+        String max = "" + this.max;
+        String arousal1 = ""+arousal;
+        Log.i("media eda: ", mean1);
+        Log.i("min eda: ", min);
+        Log.i("max eda: ", max);
+        Log.i("arousal: ", arousal1);
+
+        return arousal;
+    }
+
+    public void updateMax(){
+        this.max = Collections.max(edavalues);
+    }
+
+    public void updateMin() {
+        this.min = Collections.min(edavalues);
+    }
+
+    public void updateInterval() {
+        this.interval = (this.max - this.min)/5;
+    }
+
+    public void initInterval(){
+        this.max = Collections.max(edavalues);
+        this.min = Collections.min(edavalues);
+        this.interval = (max - min)/5;
+    }
 
     public void didReceiveBatteryLevel(float battery, double timestamp) {
         updateLabel(batteryLabel, String.format("%.0f %%", battery * 100));
@@ -287,7 +370,36 @@ public class EmpaticaActivity extends AppCompatActivity implements EmpaDataDeleg
 
     public void didReceiveGSR(float gsr, double timestamp) {
         updateLabel(edaLabel, "" + gsr);
-        postData(gsr,"eda",region);
+        //postData(gsr,"eda",region);
+        if(!init){
+            edavalues.add(gsr);
+            if(edavalues.size()==20) {
+                init = true;
+                initInterval();
+                this.arousal = 3;
+            }
+        }
+        else{
+            edavalues.add(gsr);
+            if (Collections.max(edavalues)>this.max){
+                updateMax();
+                updateInterval();
+            }
+            else if(Collections.min(edavalues)<this.min){
+                updateMin();
+                updateInterval();
+            }
+            edavalues.remove(0);
+            if(this.contador<20){
+                this.contador++;
+            }
+            else{
+                this.arousal = getArousal();
+                postData(this.arousal,"arousal",region);
+                this.contador = 0;
+            }
+
+        }
     }
 
 
@@ -311,17 +423,17 @@ public class EmpaticaActivity extends AppCompatActivity implements EmpaDataDeleg
     }
 
     //Post Request to EWE-Tasker
-    public void postData(float data, String campo ,Region region){
+    public void postData(int data, String campo ,Region region){
 
 
         Log.i("EMPATICA", campo);
 
         String event ="@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ." +
-                " @prefix math: <http:///www.w3.org/2000/10/swap/math#> ." +
                 " @prefix ewe: <http://gsi.dit.upm.es/ontologies/ewe/ns/#> ." +
+                " @prefix string: <http://www.w3.org/2000/10/swap/string#> ."+
                 " @prefix ewe-empatica: <http://gsi.dit.upm.es/ontologies/ewe-empatica/ns/#> ." +
                 " ewe-empatica:Band" +
-                " rdf:type ewe-empatica:EdaHighLevel. ewe-empatica:Band"+
+                " rdf:type ewe-empatica:ArousalLevel. ewe-empatica:Band"+
                 " ewe:level \"" +
                 data +
                 "\".";
